@@ -1,12 +1,15 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/segmentio/kafka-go"
-	kafkaClient "github.com/yudhapratama10/search-publisher/infrastructures/kafka"
-	pgClient "github.com/yudhapratama10/search-publisher/infrastructures/pg"
+	"github.com/yudhapratama10/search-publisher/handler"
+	kafkaClient "github.com/yudhapratama10/search-publisher/infrastructure/kafka"
+	pgClient "github.com/yudhapratama10/search-publisher/infrastructure/pg"
+	"github.com/yudhapratama10/search-publisher/repository"
+	"github.com/yudhapratama10/search-publisher/usecase"
 )
 
 func main() {
@@ -19,29 +22,12 @@ func main() {
 	kClient := kafkaClient.InitClient()
 	defer kClient.Close()
 
-	err = kClient.WriteMessages(context.Background(),
-		kafka.Message{
-			Topic: "test-messages",
-			Key:   []byte("Key-A"),
-			Value: []byte("Hello World!"),
-		},
-		kafka.Message{
-			Topic: "test-messages",
-			Key:   []byte("Key-B"),
-			Value: []byte("One!"),
-		},
-		kafka.Message{
-			Topic: "test-messages",
-			Key:   []byte("Key-C"),
-			Value: []byte("Two!"),
-		},
-	)
+	repo := repository.NewFootballRepository(dbClient, kClient)
+	uc := usecase.NewFootballClubUsecase(repo)
+	handler := handler.NewFootballClubHandler(uc)
 
-	if err != nil {
-		log.Fatal("failed to write messages:", err)
-	}
+	http.HandleFunc("/insert", handler.Insert)
 
-	if err := kClient.Close(); err != nil {
-		log.Fatal("failed to close writer:", err)
-	}
+	fmt.Println("Starting Service")
+	http.ListenAndServe(":8082", nil)
 }

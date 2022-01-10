@@ -3,7 +3,7 @@ package repository
 import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/segmentio/kafka-go"
-	"github.com/yudhapratama10/search-service/model"
+	model "github.com/yudhapratama10/search-publisher/model"
 )
 
 // type SourceResult struct {
@@ -16,12 +16,12 @@ type footballRepository struct {
 }
 
 type FootballRepositoryContract interface {
-	Insert(footballClub model.FootballClub) ([]model.FootballClub, error)
+	Insert(footballClub model.FootballClub) (model.FootballClub, error)
 	// Update(keyword string) ([]model.FootballClub, error)
 	// Delete
 }
 
-func NewRecipeRepository(db *pgxpool.Pool, kafka *kafka.Writer) FootballRepositoryContract {
+func NewFootballRepository(db *pgxpool.Pool, kafka *kafka.Writer) FootballRepositoryContract {
 	return &footballRepository{
 		db:    db,
 		kafka: kafka,

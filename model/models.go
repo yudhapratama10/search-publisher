@@ -1,7 +1,7 @@
 package model
 
 type FootballClub struct {
-	Id          int      `json:"id"`
+	Id          int      `json:"id,omitempty"`
 	Name        string   `json:"name"`
 	Tournaments []string `json:"tournaments"`
 	Nation      string   `json:"nation"`
