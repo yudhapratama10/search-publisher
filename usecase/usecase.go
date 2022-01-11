@@ -8,7 +8,13 @@ import (
 
 func (usecase *footballUsecase) Insert(footballClub model.FootballClub) (model.FootballClub, error) {
 
-	cursor, err := usecase.repo.Insert(footballClub)
+	cursor, action, err := usecase.repoPg.Insert(footballClub)
+	if err != nil {
+		return model.FootballClub{}, err
+	}
+
+	// Produce message to Kafka
+	_, err = usecase.repoKafka.Produce(footballClub, action)
 	if err != nil {
 		return model.FootballClub{}, err
 	}
@@ -19,7 +25,7 @@ func (usecase *footballUsecase) Insert(footballClub model.FootballClub) (model.F
 func (usecase *footballUsecase) Update(footballClub model.FootballClub) (model.FootballClub, error) {
 
 	// Checking Exist
-	respGet, err := usecase.repo.Get(footballClub.Id)
+	respGet, err := usecase.repoPg.Get(footballClub.Id)
 	if err != nil {
 		return model.FootballClub{}, err
 	}
@@ -29,7 +35,13 @@ func (usecase *footballUsecase) Update(footballClub model.FootballClub) (model.F
 	}
 
 	// Update
-	respUpdate, err := usecase.repo.Update(footballClub)
+	respUpdate, action, err := usecase.repoPg.Update(footballClub)
+	if err != nil {
+		return model.FootballClub{}, err
+	}
+
+	// Produce message to Kafka
+	_, err = usecase.repoKafka.Produce(footballClub, action)
 	if err != nil {
 		return model.FootballClub{}, err
 	}

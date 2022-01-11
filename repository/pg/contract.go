@@ -1,4 +1,4 @@
-package repository
+package pg
 
 import (
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -6,25 +6,19 @@ import (
 	model "github.com/yudhapratama10/search-publisher/model"
 )
 
-// type SourceResult struct {
-// 	Source `json:"_source"`
-// }
-
 type footballRepository struct {
-	db    *pgxpool.Pool
-	kafka *kafka.Writer
+	db *pgxpool.Pool
 }
 
 type FootballRepositoryContract interface {
-	Insert(footballClub model.FootballClub) (model.FootballClub, error)
-	Update(footballClub model.FootballClub) (model.FootballClub, error)
 	Get(id int) (model.FootballClub, error)
-	// Delete
+	Insert(footballClub model.FootballClub) (model.FootballClub, string, error)
+	Update(footballClub model.FootballClub) (model.FootballClub, string, error)
+	Delete(footballClub model.FootballClub) (model.FootballClub, string, error)
 }
 
 func NewFootballRepository(db *pgxpool.Pool, kafka *kafka.Writer) FootballRepositoryContract {
 	return &footballRepository{
-		db:    db,
-		kafka: kafka,
+		db: db,
 	}
 }

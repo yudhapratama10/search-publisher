@@ -2,11 +2,13 @@ package usecase
 
 import (
 	model "github.com/yudhapratama10/search-publisher/model"
-	"github.com/yudhapratama10/search-publisher/repository"
+	repoKafka "github.com/yudhapratama10/search-publisher/repository/kafka"
+	repoPg "github.com/yudhapratama10/search-publisher/repository/pg"
 )
 
 type footballUsecase struct {
-	repo repository.FootballRepositoryContract
+	repoPg    repoPg.FootballRepositoryContract
+	repoKafka repoKafka.FootballRepositoryContract
 }
 
 type FootballUsecaseContract interface {
@@ -14,8 +16,9 @@ type FootballUsecaseContract interface {
 	Update(footballClub model.FootballClub) (model.FootballClub, error)
 }
 
-func NewFootballClubUsecase(repo repository.FootballRepositoryContract) FootballUsecaseContract {
+func NewFootballClubUsecase(repoPg repoPg.FootballRepositoryContract, repoKafka repoKafka.FootballRepositoryContract) FootballUsecaseContract {
 	return &footballUsecase{
-		repo: repo,
+		repoPg:    repoPg,
+		repoKafka: repoKafka,
 	}
 }
