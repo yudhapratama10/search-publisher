@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,12 +21,14 @@ func main() {
 	kClient := kafkaClient.InitClient()
 	defer kClient.Close()
 
+	// Initialize Repository, Usecase, & Handler
 	repo := repository.NewFootballRepository(dbClient, kClient)
 	uc := usecase.NewFootballClubUsecase(repo)
 	handler := handler.NewFootballClubHandler(uc)
 
 	http.HandleFunc("/insert", handler.Insert)
+	http.HandleFunc("/update", handler.Update)
 
-	fmt.Println("Starting Service")
+	log.Println("Starting Service")
 	http.ListenAndServe(":8082", nil)
 }

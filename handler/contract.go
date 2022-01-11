@@ -12,6 +12,7 @@ type FootballHandler struct {
 
 type FootballHandlerContract interface {
 	Insert(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
 }
 
 func NewFootballClubHandler(footballUsecase usecase.FootballUsecaseContract) FootballHandlerContract {

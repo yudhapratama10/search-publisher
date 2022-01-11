@@ -11,6 +11,7 @@ type footballUsecase struct {
 
 type FootballUsecaseContract interface {
 	Insert(footballClub model.FootballClub) (model.FootballClub, error)
+	Update(footballClub model.FootballClub) (model.FootballClub, error)
 }
 
 func NewFootballClubUsecase(repo repository.FootballRepositoryContract) FootballUsecaseContract {

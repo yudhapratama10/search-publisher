@@ -17,7 +17,8 @@ type footballRepository struct {
 
 type FootballRepositoryContract interface {
 	Insert(footballClub model.FootballClub) (model.FootballClub, error)
-	// Update(keyword string) ([]model.FootballClub, error)
+	Update(footballClub model.FootballClub) (model.FootballClub, error)
+	Get(id int) (model.FootballClub, error)
 	// Delete
 }
 
