@@ -3,20 +3,32 @@ package pg
 import (
 	"context"
 
+	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func InitClient() (*pgxpool.Pool, error) {
+type dbConn interface {
+	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
+	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
+}
+
+var conn dbConn = nil
+
+func InitClient() (dbConn, error) {
 	conString := "postgres://postgres:@localhost:5432/postgres"
 
-	conn, err := pgxpool.Connect(context.Background(), conString)
+	dbConn, err := pgxpool.Connect(context.Background(), conString)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = conn.Ping(context.Background()); err != nil {
+	if err = dbConn.Ping(context.Background()); err != nil {
 		return nil, err
 	}
+
+	conn = dbConn
 
 	return conn, nil
 }

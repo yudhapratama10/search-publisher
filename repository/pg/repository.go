@@ -6,7 +6,7 @@ import (
 	model "github.com/yudhapratama10/search-publisher/model"
 )
 
-var topic string = "test-messages"
+// var topic string = "test-messages"
 
 func (repo *footballRepository) Insert(footballClub model.FootballClub) (model.FootballClub, string, error) {
 	var id int
@@ -15,6 +15,7 @@ func (repo *footballRepository) Insert(footballClub model.FootballClub) (model.F
 	err := repo.db.QueryRow(context.Background(),
 		"INSERT INTO footballclub (name, tournaments, nation, hasstadium, description, rating) VALUES ($1, $2, $3, $4, $5, $6) returning id",
 		footballClub.Name, footballClub.Tournaments, footballClub.Nation, footballClub.HasStadium, footballClub.Description, footballClub.Rating).Scan(&id)
+	// fmt.Println(err)
 	if err != nil {
 		return model.FootballClub{}, operation, err
 	}

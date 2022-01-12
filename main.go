@@ -7,7 +7,8 @@ import (
 	"github.com/yudhapratama10/search-publisher/handler"
 	kafkaClient "github.com/yudhapratama10/search-publisher/infrastructure/kafka"
 	pgClient "github.com/yudhapratama10/search-publisher/infrastructure/pg"
-	"github.com/yudhapratama10/search-publisher/repository"
+	kafkaRepo "github.com/yudhapratama10/search-publisher/repository/kafka"
+	pgRepo "github.com/yudhapratama10/search-publisher/repository/pg"
 	"github.com/yudhapratama10/search-publisher/usecase"
 )
 
@@ -22,8 +23,9 @@ func main() {
 	defer kClient.Close()
 
 	// Initialize Repository, Usecase, & Handler
-	repo := repository.NewFootballRepository(dbClient, kClient)
-	uc := usecase.NewFootballClubUsecase(repo)
+	pgRepo := pgRepo.NewFootballRepository(dbClient)
+	kafkaRepo := kafkaRepo.NewFootballRepository(kClient)
+	uc := usecase.NewFootballClubUsecase(pgRepo, kafkaRepo)
 	handler := handler.NewFootballClubHandler(uc)
 
 	http.HandleFunc("/insert", handler.Insert)

@@ -1,13 +1,21 @@
 package pg
 
 import (
-	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/segmentio/kafka-go"
+	"context"
+
+	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
 	model "github.com/yudhapratama10/search-publisher/model"
 )
 
 type footballRepository struct {
-	db *pgxpool.Pool
+	db dbConn
+}
+
+type dbConn interface {
+	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
+	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
 }
 
 type FootballRepositoryContract interface {
@@ -17,8 +25,8 @@ type FootballRepositoryContract interface {
 	Delete(footballClub model.FootballClub) (model.FootballClub, string, error)
 }
 
-func NewFootballRepository(db *pgxpool.Pool, kafka *kafka.Writer) FootballRepositoryContract {
+func NewFootballRepository(dbConn dbConn) FootballRepositoryContract {
 	return &footballRepository{
-		db: db,
+		db: dbConn,
 	}
 }
