@@ -14,9 +14,9 @@ type dbConn interface {
 	Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
 }
 
-var conn dbConn = nil
-
 func InitClient() (dbConn, error) {
+	var conn dbConn = nil
+
 	conString := "postgres://postgres:@localhost:5432/postgres"
 
 	dbConn, err := pgxpool.Connect(context.Background(), conString)

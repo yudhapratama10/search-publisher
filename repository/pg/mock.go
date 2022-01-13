@@ -2,9 +2,6 @@ package pg
 
 import (
 	"context"
-	"errors"
-	"math/rand"
-	"time"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -42,55 +39,40 @@ func (f *FootballMock) Delete(footballClub model.FootballClub) (model.FootballCl
 	return args.Get(0).(model.FootballClub), args.String(1), args.Error(2)
 }
 
-// =============================================================================
-
+// ============================================================
 // Internal Repository Mock
 
 type mockDBConnection struct {
+	mockQueryRow MockQueryRow
+	mockQuery    MockQuery
+	mockExec     MockExec
 }
 
 type mockRow struct {
-	id  int
-	msg string
+	scan Scan
 }
 
-func (mock mockRow) Scan(dest ...interface{}) error {
-	id := dest[0].(*int) // scan pointer
-	if mock.msg != "" {
-		return errors.New(mock.msg)
-	}
-	*id = mock.id
+// each mockDBConnection will implement its own queryRow
+type MockQueryRow func(ctx context.Context, sql string, args ...interface{}) pgx.Row
 
-	return nil
+type MockQuery func(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
+
+type MockExec func(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
+
+type Scan func(dest ...interface{}) error
+
+func (mock mockRow) Scan(dest ...interface{}) error {
+	return mock.scan(dest...)
 }
 
 func (mock mockDBConnection) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
-	if args[0] != nil && args[0] == "" {
-		return mockRow{id: 0, msg: "Field is empty"}
-	} else if args[1] != nil && args[1] == "" {
-		return mockRow{id: 0, msg: "Field is empty"}
-	} else if args[2] != nil && args[2] == "" {
-		return mockRow{id: 0, msg: "Field is empty"}
-	}
-
-	rand.Seed(time.Now().UnixNano())
-	return mockRow{id: rand.Intn(100-1+1) + 1}
-}
-
-func (mock mockDBConnection) Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) {
-	if string(sql[0]) == "U" {
-		if len(arguments) != 7 {
-			return nil, errors.New("Supposed to be 7 params")
-		}
-	} else if string(sql[0]) == "D" {
-		if len(arguments) != 1 {
-			return nil, errors.New("Supposed to be 1 params")
-		}
-	}
-
-	return nil, nil
+	return mock.mockQueryRow(ctx, sql, args...)
 }
 
 func (mock mockDBConnection) Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error) {
-	return nil, nil
+	return mock.mockQuery(ctx, sql, optionsAndArgs...)
+}
+
+func (mock mockDBConnection) Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) {
+	return mock.mockExec(ctx, sql, arguments...)
 }
