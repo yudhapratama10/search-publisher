@@ -113,7 +113,7 @@ func TestDeleteFootballClub(t *testing.T) {
 
 	t.Run("Should Success Delete", func(t *testing.T) {
 		data := model.FootballClub{
-			Id:          0,
+			Id:          20,
 			Name:        "Newcastle United",
 			Nation:      "Inggris",
 			Tournaments: []string{"English Premier League", "FA Cup"},
@@ -124,6 +124,10 @@ func TestDeleteFootballClub(t *testing.T) {
 		mockExec := func(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) {
 			if len(arguments) != 1 {
 				return nil, errors.New("Supposed to be 1 params")
+			}
+
+			if arguments[0] == nil || arguments[0] == 0 {
+				return nil, errors.New("Args `id` cannot be empty")
 			}
 			return nil, nil
 		}
