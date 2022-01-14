@@ -39,7 +39,7 @@ func (handler *FootballHandler) Insert(w http.ResponseWriter, r *http.Request) {
 			"result": "Success",
 			"data":   cursorInsert,
 		}
-		result, err := json.Marshal(resp)
+		result, _ := json.Marshal(resp)
 		w.Write(result)
 	} else {
 		http.Error(w, "", http.StatusMethodNotAllowed)

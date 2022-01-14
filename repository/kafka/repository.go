@@ -9,7 +9,7 @@ import (
 	model "github.com/yudhapratama10/search-publisher/model"
 )
 
-var topic string = "test-messages"
+var topic string = "search"
 
 func (repo *footballRepository) Produce(footballClub model.FootballClub, operation string) (model.FootballClub, error) {
 

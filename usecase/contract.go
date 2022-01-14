@@ -14,6 +14,7 @@ type footballUsecase struct {
 type FootballUsecaseContract interface {
 	Insert(footballClub model.FootballClub) (model.FootballClub, error)
 	Update(footballClub model.FootballClub) (model.FootballClub, error)
+	Delete(footballClub model.FootballClub) (model.FootballClub, error)
 }
 
 func NewFootballClubUsecase(repoPg repoPg.FootballRepositoryContract, repoKafka repoKafka.FootballRepositoryContract) FootballUsecaseContract {

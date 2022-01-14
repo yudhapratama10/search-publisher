@@ -3,7 +3,6 @@ package pg
 import (
 	"context"
 	"errors"
-	"fmt"
 	"testing"
 
 	"github.com/jackc/pgconn"
@@ -40,7 +39,7 @@ func TestInsertFootbalClub(t *testing.T) {
 		repo := NewFootballRepository(mock)
 
 		res, _, err := repo.Insert(data)
-		fmt.Println(res)
+		// fmt.Println(res)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, res)
 	})
