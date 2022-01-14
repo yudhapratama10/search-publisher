@@ -9,10 +9,10 @@ import (
 )
 
 type footballRepository struct {
-	db dbConn
+	db dbCommand
 }
 
-type dbConn interface {
+type dbCommand interface {
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
 	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
 	Query(ctx context.Context, sql string, optionsAndArgs ...interface{}) (pgx.Rows, error)
@@ -25,8 +25,8 @@ type FootballRepositoryContract interface {
 	Delete(footballClub model.FootballClub) (model.FootballClub, string, error)
 }
 
-func NewFootballRepository(dbConn dbConn) FootballRepositoryContract {
+func NewFootballRepository(db dbCommand) FootballRepositoryContract {
 	return &footballRepository{
-		db: dbConn,
+		db: db,
 	}
 }

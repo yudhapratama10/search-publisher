@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/jackc/pgconn v1.10.1
-	github.com/jackc/pgproto3 v1.1.0
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/segmentio/kafka-go v0.4.25
 	github.com/stretchr/testify v1.7.0
@@ -12,9 +11,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/jackc/chunkreader v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -24,7 +21,6 @@ require (
 	github.com/jackc/puddle v1.2.0 // indirect
 	github.com/klauspost/compress v1.9.8 // indirect
 	github.com/pierrec/lz4 v2.6.0+incompatible // indirect
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
